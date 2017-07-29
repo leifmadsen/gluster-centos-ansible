@@ -1,0 +1,7 @@
+---
+# GlusterFS
+glusterfs_default_release: 310
+gluster_mount_dir: /mnt/gluster
+gluster_brick_root: /bricks/brick1
+gluster_brick_name: g1
+gluster_brick_dir: "{{ gluster_brick_root }}/{{ gluster_brick_name }}"

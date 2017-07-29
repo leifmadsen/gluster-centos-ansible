@@ -1,0 +1,9 @@
+[gluster]
+slytherin.management.61will.space
+gryffindor.management.61will.space
+ravenclaw.management.61will.space
+
+[gluster:vars]
+ansible_user=admin
+ansible_become=true
+ansible_become_user=root

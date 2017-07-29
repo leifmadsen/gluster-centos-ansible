@@ -1,0 +1,41 @@
+---
+- hosts: gluster
+  become: yes
+
+  roles:
+    - geerlingguy.glusterfs
+
+  tasks:
+    - name: Disable the firewall for now
+      systemd:
+        name: firewalld
+        state: stopped
+        enabled: no
+
+    - name: Ensure GlusterFS brick and mount directory exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0775
+      with_items:
+        - "{{ gluster_brick_root }}"
+        - "{{ gluster_mount_dir }}"
+
+    - name: Configure GlusterFS volume
+      gluster_volume:
+        state: present
+        name: "{{ gluster_brick_name }}"
+        brick: "{{ gluster_brick_dir }}"
+        replicas: 3
+        cluster: "{{ groups.gluster | join (',') }}"
+        host: "{{ inventory_hostname }}"
+        force: yes
+      run_once: true
+
+    - name: Ensure GlusterFS volume is mounted
+      mount:
+        name: "{{ gluster_mount_dir }}"
+        src: "{{ inventory_hostname }}:/{{ gluster_brick_name }}"
+        fstype: glusterfs
+        opts: "defaults,_netdev"
+        state: mounted
